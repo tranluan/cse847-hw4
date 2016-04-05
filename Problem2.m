@@ -13,8 +13,11 @@ aucs = zeros(size(pars));
 
 % Perform the experiment.
 for i=1:numel(pars)
+    % Train the logistic regressor
     [weights, bias] = logistic_l1_train(X_train, y_train, pars(i));
-    feature_num(i) = nnz(weights);
+    
+    % Compute the predicted values and performance
+    feature_num(i) = sum( weights~= 0);
     predictions = X_test * weights;
     [~, ~, threshold, aucs(i)] = perfcurve(y_test, predictions, 1);
 end
@@ -24,7 +27,7 @@ figure
 plot(pars, feature_num, '-o')
 title('{\bf Count of Non-zero Weights vs. Regularization Parameter}')
 xlabel('Regularization Parameter')
-ylabel('Count')
+ylabel('Number of non-zero weight')
 
 figure
 plot(pars, aucs, '-o')
